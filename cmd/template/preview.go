@@ -16,7 +16,19 @@ var useColor bool
 // previewCmd represents the preview command
 var previewCmd = &cobra.Command{
 	Use:   "preview",
-	Short: "A brief description of your command",
+	Short: "Show the file tree of a template",
+	Long: `
+Displays a preview of the file and folder structure of a specific template.
+
+If no template name is provided, an interactive menu will let you select one.
+
+You can customize the preview with flags such as --icons or --color.
+
+Examples:
+  templie template preview my-template
+  templie template preview --icons --color
+  templie template preview
+`,
 
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {

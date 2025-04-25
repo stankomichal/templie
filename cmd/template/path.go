@@ -11,7 +11,15 @@ import (
 // pathCmd represents the path command
 var pathCmd = &cobra.Command{
 	Use:   "path",
-	Short: "A brief description of your command",
+	Short: "Print the file system path of a specific template",
+	Long: `Displays the full file system path to the directory of a given template.
+
+If no template name is provided, an interactive selection menu will be shown.
+
+Examples:
+  templie template path my-template
+  templie template path
+`,
 
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {

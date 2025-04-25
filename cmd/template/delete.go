@@ -11,8 +11,16 @@ import (
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
 	Use:   "delete <template-name>",
-	Short: "A brief description of your command",
+	Short: "Delete a template and its associated metadata",
+	Long: `
+Deletes a specified template and its metadata entry.
 
+If no template name is provided, you will be prompted to select from the list of available templates.
+
+Examples:
+  templie template delete my-template
+  templie template delete
+`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)

@@ -12,8 +12,15 @@ import (
 // deleteCategoryCmd represents the deleteCategory command
 var deleteCategoryCmd = &cobra.Command{
 	Use:   "delete-category <template-name> [categories...]>",
-	Short: "A brief description of your command",
+	Short: "Delete one or more categories from a template",
+	Long: `
+Removes one or more categories from the specified template.
 
+You must provide the template name followed by at least one category to delete.
+
+Examples:
+  templie template delete-category my-template dev backend
+`,
 	Args: cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)

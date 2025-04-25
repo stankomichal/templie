@@ -13,7 +13,7 @@ func SanitizeName(name string) string {
 	name = strings.ReplaceAll(name, " ", "_")
 
 	// Remove any special characters (except underscores, dashes, and periods)
-	re := regexp.MustCompile("[^a-z0-9-_.]")
+	re := regexp.MustCompile("[^a-zA-Z0-9-_.]")
 	name = re.ReplaceAllString(name, "")
 
 	return name

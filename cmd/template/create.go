@@ -5,7 +5,6 @@ package template
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/stankomichal/templie/internal/helpers"
 	"github.com/stankomichal/templie/internal/template"
 	"os"
 )
@@ -15,8 +14,19 @@ var outputPath string
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create <template-name>",
-	Short: "A brief description of your command",
+	Short: "Create a new template folder with optional output folder",
+	Long: `
+Creates a new template by name. If no name is provided, you can interactively select from existing templates.
 
+You can also use the --output flag to specify where the template folder should be created; otherwise, the current working directory is used.
+
+Examples:
+  templie template create my-template
+  templie template create
+  templie template create --output ./generated
+
+If no name is provided, you’ll be prompted to choose from existing templates.
+`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
@@ -36,9 +46,9 @@ var createCmd = &cobra.Command{
 				cmd.Println("Error selecting template:", err)
 				return
 			}
-			templateName = helpers.SanitizeName(selected)
+			templateName = selected
 		} else {
-			templateName = helpers.SanitizeName(args[0])
+			templateName = args[0]
 		}
 
 		if templateName == "" {

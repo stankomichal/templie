@@ -12,7 +12,15 @@ import (
 // showCmd represents the show command
 var showCmd = &cobra.Command{
 	Use:   "show <variable-name>",
-	Short: "A brief description of your command",
+	Short: "Show the current value of a configuration variable",
+	Long: `
+The 'show' command allows you to view the current value of a specific configuration variable.
+
+This command takes the name of the configuration variable as an argument and outputs its current value.
+
+Examples:
+  templie config show <variable-name>   // Displays the current value of the specified configuration variable
+`,
 
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
