@@ -1,3 +1,18 @@
-﻿.idea
+﻿.idea/
+.vscode/
+
+*.exe
+*.ddl
+*.so
+*.test
+*.out
+
+*.bak
+*.log
+
+/build/
+/bin/
+vendor/
+
 # Added by goreleaser init:
 dist/
