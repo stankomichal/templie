@@ -12,8 +12,19 @@ import (
 // addCategoryCmd represents the addCategory command
 var addCategoryCmd = &cobra.Command{
 	Use:   "add-category <template-name> [categories...]",
-	Short: "A brief description of your command",
+	Short: "Add one or more categories to a template",
+	Long: `
+Adds one or more categories to the specified template.
 
+Each category name will be sanitized to ensure it's a valid folder-safe name.
+Valid characters include: a-z, A-Z, 0-9, _, . and -
+
+Examples:
+  templie template add-category my-template backend shared
+  templie template add-category "cool-template" devops
+
+You must provide at least one category.
+`,
 	Args: cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)

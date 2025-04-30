@@ -12,7 +12,15 @@ import (
 // defaultCmd represents the default command
 var defaultCmd = &cobra.Command{
 	Use:   "default",
-	Short: "A brief description of your command",
+	Short: "Display the default configuration",
+	Long: `
+The 'default' command displays the default configuration settings for the templates.
+
+This command outputs the default configuration as a YAML file, which can be used as a template for setting up new template configurations.
+
+Examples:
+  templie config default   // Displays the default configuration settings in YAML format
+`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		out, err := yaml.Marshal(config.DefaultConfig())

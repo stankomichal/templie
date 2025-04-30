@@ -12,7 +12,16 @@ import (
 // renameCmd represents the rename command
 var renameCmd = &cobra.Command{
 	Use:   "rename",
-	Short: "A brief description of your command",
+	Short: "Rename an existing template",
+	Long: `
+Renames a template folder to a new name.
+
+Both old and new names will be sanitized, allowing only alphanumeric characters, underscores (_), dashes (-), and dots (.).
+
+Examples:
+  templie template rename old-template new-template
+  templie template rename my.template_1 my-renamed-template
+`,
 
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {

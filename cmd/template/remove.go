@@ -8,20 +8,21 @@ import (
 	"github.com/stankomichal/templie/internal/template"
 )
 
-// pathCmd represents the path command
-var pathCmd = &cobra.Command{
-	Use:   "path",
-	Short: "Print the file system path of a specific template",
-	Long: `Displays the full file system path to the directory of a given template.
+// removeCmd represents the remove command
+var removeCmd = &cobra.Command{
+	Use:   "remove <template-name>",
+	Short: "Remove a template and its associated metadata",
+	Long: `
+Removes a specified template and its metadata entry.
 
-If no template name is provided, an interactive selection menu will be shown.
+If no template name is provided, you will be prompted to select from the list of available templates.
 
 Examples:
-  templie template path my-template
-  templie template path
+  templie template remove
+  templie t rm my-template
 `,
-
-	Args: cobra.MaximumNArgs(1),
+	Aliases: []string{"rm"},
+	Args:    cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
 
@@ -36,15 +37,15 @@ Examples:
 		} else {
 			templateName = args[0]
 		}
-		path, err := templateHandler.GetTemplatePath(templateName)
-		if err != nil {
-			cmd.Println("Error getting template path:", err)
+
+		if err := templateHandler.RemoveTemplate(templateName); err != nil {
+			cmd.Println("Error removing the template:", err)
 			return
 		}
-		cmd.Printf("Path for template %s: %s\n", templateName, path)
+		cmd.Printf("Template %s removed\n", templateName)
 	},
 }
 
 func init() {
-	TemplateCmd.AddCommand(pathCmd)
+	TemplateCmd.AddCommand(removeCmd)
 }

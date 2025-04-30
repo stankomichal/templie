@@ -14,7 +14,17 @@ var syncStrategy string
 // syncCmd represents the sync command
 var syncCmd = &cobra.Command{
 	Use:   "sync",
-	Short: "A brief description of your command",
+	Short: "Synchronize templates based on the given strategy",
+	Long: `
+Synchronizes templates according to the specified strategy.
+You can choose between two strategies: 
+  - "create": Create any missing templates. (Default)
+  - "clean": Clean up any templates that are no longer needed.
+
+Examples:
+  templie sync --strategy       // Synchronizes templates by creating missing ones
+  templie sync --strategy clean // Cleans up unnecessary templates
+`,
 
 	Args:      cobra.OnlyValidArgs,
 	ValidArgs: []string{"create", "clean"},

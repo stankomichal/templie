@@ -1,0 +1,42 @@
+/*
+Copyright © 2025 Michal Stanko michal.stankoml@gmail.com
+*/
+package template
+
+import (
+	"github.com/stankomichal/templie/internal/template"
+
+	"github.com/spf13/cobra"
+)
+
+// removeCategoryCmd represents the removeCategory command
+var removeCategoryCmd = &cobra.Command{
+	Use:   "remove-category <template-name> [categories...]>",
+	Short: "Remove one or more categories from a template",
+	Long: `
+Removes one or more categories from the specified template.
+
+You must provide the template name followed by at least one category to remove.
+
+Examples:
+  templie template remove-category my-template dev backend
+`,
+	Args: cobra.MinimumNArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
+
+		templateName := args[0]
+		categories := args[1:]
+		for _, category := range categories {
+			if _, err := templateHandler.RemoveCategoryFromTemplate(templateName, category); err != nil {
+				cmd.Println("Error removing category:", err)
+				return
+			}
+		}
+		cmd.Printf("Categories %v removed from template %s\n", categories, templateName)
+	},
+}
+
+func init() {
+	TemplateCmd.AddCommand(removeCategoryCmd)
+}

@@ -16,8 +16,20 @@ var copyContent bool
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init <template-name>",
-	Short: "A brief description of your command",
+	Short: "Initialize a new template with optional category and file copying",
+	Long: `
+Initializes a new template by creating its metadata and associated directory.
 
+You must provide a name for the template. The name will be sanitized, allowing only alphanumeric characters, underscores (_), dashes (-), and dots (.).
+
+Optionally, you can use flags to assign categories and copy the contents of the current working directory 
+into the newly created template folder.
+
+Examples:
+  templie template init my-template
+  templie template init my-template --categories dev backend
+  templie template init my-template --copy
+`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)

@@ -17,16 +17,29 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "templie",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "A simple and flexible CLI tool for managing project templates",
+	Long: `
+Templie is a cross-platform CLI tool designed to streamline the management, creation,
+and initialization of reusable project templates.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+With templie, you can:
+  - Create and organize templates in categories
+  - Initialize new projects from templates
+  - Sync metadata with template folders
+  - Add icons and colorized tree views
+  - Manage templates through a clean YAML-based config
+
+Whether you're a solo developer or managing shared boilerplate across teams,
+templie helps you keep your templates consistent, structured, and accessible.
+
+
+Examples:
+  templie template init my-template
+  templie template create my-template -o output-folder
+  templie t preview my-template -ci
+  templie t sync --strategy=create
+  templie config display
+`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// Load the config file
 		cfg, err := configClass.Load()

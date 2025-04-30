@@ -12,7 +12,15 @@ import (
 // displayCmd represents the display command
 var displayCmd = &cobra.Command{
 	Use:   "display",
-	Short: "A brief description of your command",
+	Short: "Display the current configuration",
+	Long: `
+The 'display' command outputs the current configuration settings.
+
+This command retrieves and displays the active configuration settings, formatted as a YAML file.
+
+Examples:
+  templie config display   // Displays the current configuration in YAML format
+`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		config := cmd.Context().Value("config").(*config.Config)

@@ -12,7 +12,15 @@ import (
 // resetCmd represents the reset command
 var resetCmd = &cobra.Command{
 	Use:   "reset <variable-name>",
-	Short: "A brief description of your command",
+	Short: "Reset a specific configuration variable to its default value",
+	Long: `
+The 'reset' command allows you to reset a specific configuration variable to its default value.
+
+This command accepts the name of the configuration variable you want to reset and reverts it to its predefined default value.
+
+Examples:
+  templie config reset <variable-name>   // Resets the specified configuration variable to its default
+`,
 
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
