@@ -1,0 +1,44 @@
+﻿name: CI
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  check:
+    name: Build, Test & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run build
+        run: go build -v ./...
+
+      - name: Run tests
+        run: go test -v ./...
+
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Run staticcheck
+        uses: dominikh/staticcheck-action@v1
+
+      - name: Check go mod tidy
+        run: |
+          go mod tidy
+          git diff --exit-code go.mod go.sum
+
+      - name: Check formatting
+        run: |
+          gofmt -l . | tee fmt.txt
+          test ! -s fmt.txt
