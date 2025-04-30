@@ -13,7 +13,7 @@ var TemplateCmd = &cobra.Command{
 	Short: "Manage and manipulate templates",
 	Long: `
 The 'template' command allows you to manage templates, including creating, 
-modifying, deleting, and interacting with various template categories.
+modifying, removing, and interacting with various template categories.
 
 Use this command to:
   - Initialize templates or configure their categories
