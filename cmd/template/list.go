@@ -20,8 +20,9 @@ Each template entry will show its name and a nested list of any categories it be
 
 Examples:
   templie template list
+  templie template ls
 `,
-
+	Aliases: []string{"ls"},
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
 

@@ -8,20 +8,21 @@ import (
 	"github.com/stankomichal/templie/internal/template"
 )
 
-// deleteCmd represents the delete command
-var deleteCmd = &cobra.Command{
-	Use:   "delete <template-name>",
-	Short: "Delete a template and its associated metadata",
+// removeCmd represents the remove command
+var removeCmd = &cobra.Command{
+	Use:   "remove <template-name>",
+	Short: "Remove a template and its associated metadata",
 	Long: `
-Deletes a specified template and its metadata entry.
+Removes a specified template and its metadata entry.
 
 If no template name is provided, you will be prompted to select from the list of available templates.
 
 Examples:
-  templie template delete my-template
-  templie template delete
+  templie template remove
+  templie t rm my-template
 `,
-	Args: cobra.MaximumNArgs(1),
+	Aliases: []string{"rm"},
+	Args:    cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
 
@@ -37,14 +38,14 @@ Examples:
 			templateName = args[0]
 		}
 
-		if err := templateHandler.DeleteTemplate(templateName); err != nil {
-			cmd.Println("Error deleting template:", err)
+		if err := templateHandler.RemoveTemplate(templateName); err != nil {
+			cmd.Println("Error removing the template:", err)
 			return
 		}
-		cmd.Printf("Template %s deleted\n", templateName)
+		cmd.Printf("Template %s removed\n", templateName)
 	},
 }
 
 func init() {
-	TemplateCmd.AddCommand(deleteCmd)
+	TemplateCmd.AddCommand(removeCmd)
 }

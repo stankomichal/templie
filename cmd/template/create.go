@@ -23,11 +23,12 @@ You can also use the --output flag to specify where the template folder should b
 Examples:
   templie template create my-template
   templie template create
-  templie template create --output ./generated
+  templie t c --output ./generated
 
 If no name is provided, you’ll be prompted to choose from existing templates.
 `,
-	Args: cobra.MaximumNArgs(1),
+	Aliases: []string{"c"},
+	Args:    cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
 		if outputPath == "" {

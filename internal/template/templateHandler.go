@@ -122,7 +122,7 @@ func (th *TemplateHandler) RenameTemplate(oldTemplateName string, newTemplateNam
 	return &template, nil
 }
 
-func (th *TemplateHandler) DeleteTemplate(templateName string) error {
+func (th *TemplateHandler) RemoveTemplate(templateName string) error {
 	if _, exists := th.templates[templateName]; !exists {
 		return fmt.Errorf("template \"%s\" does not exist", templateName)
 	}
@@ -167,7 +167,7 @@ func (th *TemplateHandler) AddCategoryToTemplate(templateName string, category s
 	return &template, nil
 }
 
-func (th *TemplateHandler) DeleteCategoryFromTemplate(templateName string, category string) ([]string, error) {
+func (th *TemplateHandler) RemoveCategoryFromTemplate(templateName string, category string) ([]string, error) {
 	template, exists := th.templates[templateName]
 	if !exists {
 		return nil, fmt.Errorf("template \"%s\" does not exist", templateName)
@@ -320,8 +320,6 @@ func Load() (*TemplateHandler, error) {
 	templateHandler := TemplateHandler{
 		templates: templates,
 	}
-
-	// TODO: Sync the templates with the file system
 
 	// Templates are empty - default to empty map
 	if templateHandler.templates == nil {

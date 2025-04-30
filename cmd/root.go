@@ -36,8 +36,8 @@ templie helps you keep your templates consistent, structured, and accessible.
 Examples:
   templie template init my-template
   templie template create my-template -o output-folder
-  templie template preview my-template -ci
-  templie template sync --strategy=create
+  templie t preview my-template -ci
+  templie t sync --strategy=create
   templie config display
 `,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {

@@ -24,10 +24,11 @@ Use this command to:
 Examples:
   templie template create <template-name>                          // Creates a new template with the given name
   templie template list                                            // Lists all templates with categories
-  templie template delete <template-name>                          // Deletes the specified template
-  templie template add-category <template-name> [categories...]    // Adds categories to a template
-  templie template delete-category <template-name> [categories...] // Deletes categories from a template
+  templie template remove <template-name>                          // Removes the specified template
+  templie t add-category <template-name> [categories...]    // Adds categories to a template
+  templie t remove-category <template-name> [categories...] // Removes categories from a template
 `,
+	Aliases: []string{"t"},
 }
 
 func init() {
