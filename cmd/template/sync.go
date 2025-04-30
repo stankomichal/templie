@@ -4,6 +4,7 @@ Copyright © 2025 Michal Stanko michal.stankoml@gmail.com
 package template
 
 import (
+	"github.com/stankomichal/templie/internal/contextKey"
 	"github.com/stankomichal/templie/internal/template"
 
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ Examples:
 			return
 		}
 
-		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
+		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 		err := templateHandler.SyncTemplates(syncStrategy)
 		if err != nil {
 			return
