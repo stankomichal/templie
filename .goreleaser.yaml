@@ -40,7 +40,9 @@ changelog:
       - "^docs:"
       - "^test:"
 
+
 release:
+  prerelease: auto
   footer: >-
 
     ---
