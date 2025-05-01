@@ -12,6 +12,7 @@ import (
 )
 
 var outputPath string
+var force bool
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -60,6 +61,7 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 		} else {
 			templateName = args[0]
 		}
+
 		helpers.VerbosePrintf(cmd, "Template name: %s\n", templateName)
 
 		if templateName == "" {
@@ -67,8 +69,10 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 			return
 		}
 
+		helpers.VerbosePrintf(cmd, "Force flag: %v\n", force)
+
 		helpers.VerbosePrintf(cmd, "Creating template %s at %s\n", templateName, outputPath)
-		_, err := templateHandler.CreateTemplate(templateName, outputPath)
+		_, err := templateHandler.CreateTemplate(cmd, templateName, outputPath, force)
 		if err != nil {
 			cmd.PrintErrf("Error creating template: %v\n", err)
 			return
@@ -83,4 +87,5 @@ func init() {
 	TemplateCmd.AddCommand(createCmd)
 
 	createCmd.Flags().StringVarP(&outputPath, "output", "o", "", "Output path for the template")
+	createCmd.Flags().BoolVarP(&force, "force", "f", false, "Force creation of the template even if it already exists")
 }

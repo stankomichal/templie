@@ -50,7 +50,7 @@ Examples:
 		helpers.VerbosePrintf(cmd, "Categories: %v\n", categories)
 		helpers.VerbosePrintf(cmd, "Copy content: %v\n", copyContent)
 
-		path, err := templateHandler.InitializeTemplate(templateName, &categories, copyContent)
+		path, err := templateHandler.InitializeTemplate(cmd, templateName, &categories, copyContent)
 		if err != nil {
 			cmd.PrintErrf("Error initializing template: %v\n", err)
 			return
