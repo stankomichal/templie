@@ -63,18 +63,18 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 		helpers.VerbosePrintf(ctx, "Template name: %s\n", templateName)
 
 		if templateName == "" {
-			cmd.Println("Error: Template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
+			cmd.PrintErrln("Error: Template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 			return
 		}
 
 		helpers.VerbosePrintf(ctx, "Creating template %s at %s\n", templateName, outputPath)
 		_, err := templateHandler.CreateTemplate(templateName, outputPath)
 		if err != nil {
-			cmd.Printf("Error creating template: %v\n", err)
+			cmd.PrintErrf("Error creating template: %v\n", err)
 			return
 		}
 
-		cmd.Printf("Template successfully created\n")
+		cmd.Printf("Template %s successfully created at %s\n", templateName, outputPath)
 		helpers.VerbosePrintln(ctx, "Template creation process completed")
 	},
 }
