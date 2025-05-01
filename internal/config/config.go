@@ -18,7 +18,7 @@ type Config struct {
 func DefaultConfig() (*Config, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return nil, fmt.Errorf("could not get user home dir: %v", err)
+		return nil, fmt.Errorf("could not get user home dir: %w", err)
 	}
 
 	return &Config{
@@ -39,7 +39,7 @@ func DefaultConfig() (*Config, error) {
 func (c *Config) Show(varName string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
-		return "", fmt.Errorf("could not find the variable %v", varName)
+		return "", fmt.Errorf("could not find the variable %w", varName)
 	}
 	return *(varPointer.(*string)), nil
 }
@@ -47,12 +47,12 @@ func (c *Config) Show(varName string) (string, error) {
 func (c *Config) Update(varName string, varNewValue string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
-		return "", fmt.Errorf("could not find the variable %v", varName)
+		return "", fmt.Errorf("could not find the variable %w", varName)
 	}
 	*(varPointer.(*string)) = varNewValue
 
 	if err := writeConfig(c); err != nil {
-		return "", fmt.Errorf("could not write config file: %v", err)
+		return "", fmt.Errorf("could not write config file: %w", err)
 	}
 
 	return varNewValue, nil
@@ -61,12 +61,12 @@ func (c *Config) Update(varName string, varNewValue string) (string, error) {
 func (c *Config) Reset(varName string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
-		return "", fmt.Errorf("could not find the variable %v", varName)
+		return "", fmt.Errorf("could not find the variable %w", varName)
 	}
 
 	defaultConfig, err := DefaultConfig()
 	if err != nil {
-		return "", fmt.Errorf("could not get default config: %v", err)
+		return "", fmt.Errorf("could not get default config: %w", err)
 	}
 	varPointerDefault := defaultConfig.getVar(varName)
 	*(varPointer.(*string)) = *(varPointerDefault.(*string))
@@ -80,7 +80,7 @@ func (c *Config) Reset(varName string) (string, error) {
 func Load(cmd *cobra.Command) (*Config, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return nil, fmt.Errorf("could not get user home dir: %v", err)
+		return nil, fmt.Errorf("could not get user home dir: %w", err)
 	}
 	configDir := filepath.Join(homeDir, ".config", "templie")
 	configPath := filepath.Join(configDir, "settings.yaml")
@@ -89,13 +89,13 @@ func Load(cmd *cobra.Command) (*Config, error) {
 	if _, err = os.Stat(configPath); os.IsNotExist(err) {
 		// Folder
 		if err = os.MkdirAll(configDir, 0755); err != nil {
-			return nil, fmt.Errorf("could not create config directory: %v", err)
+			return nil, fmt.Errorf("could not create config directory: %w", err)
 		}
 
 		// Config file
 		defaultConfig, err := DefaultConfig()
 		if err != nil {
-			return nil, fmt.Errorf("could not get default config: %v", err)
+			return nil, fmt.Errorf("could not get default config: %w", err)
 		}
 
 		if err = writeConfig(defaultConfig); err != nil {
@@ -108,12 +108,12 @@ func Load(cmd *cobra.Command) (*Config, error) {
 
 	data, err := os.ReadFile(configPath)
 	if err != nil {
-		return nil, fmt.Errorf("could not read config: %v", err)
+		return nil, fmt.Errorf("could not read config: %w", err)
 	}
 
 	var cfg Config
 	if err = yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, fmt.Errorf("could not parse YAML: %v", err)
+		return nil, fmt.Errorf("could not parse YAML: %w", err)
 	}
 
 	return &cfg, nil
@@ -133,17 +133,17 @@ func (c *Config) getVar(varName string) interface{} {
 func writeConfig(config *Config) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return fmt.Errorf("could not get user home dir: %v", err)
+		return fmt.Errorf("could not get user home dir: %w", err)
 	}
 	configPath := filepath.Join(homeDir, ".config", "templie", "settings.yaml")
 
 	out, err := yaml.Marshal(config)
 	if err != nil {
-		return fmt.Errorf("could not marshal default config: %v", err)
+		return fmt.Errorf("could not marshal default config: %w", err)
 	}
 
 	if err = os.WriteFile(configPath, out, 0644); err != nil {
-		return fmt.Errorf("could not write config file: %v", err)
+		return fmt.Errorf("could not write config file: %w", err)
 	}
 	return nil
 }

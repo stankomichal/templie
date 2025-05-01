@@ -14,7 +14,7 @@ import (
 
 // removeCategoryCmd represents the removeCategory command
 var removeCategoryCmd = &cobra.Command{
-	Use:   "remove-category <template-name> [categories...]>",
+	Use:   "remove-category <template-name> <categories>",
 	Short: "Remove one or more categories from a template",
 	Long: `
 Removes one or more categories from the specified template.
@@ -22,7 +22,7 @@ Removes one or more categories from the specified template.
 You must provide the template name followed by at least one category to remove.
 
 Examples:
-  templie template remove-category my-template dev backend
+  templie template remove-category my-template dev,backend
 `,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {

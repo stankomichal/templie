@@ -38,7 +38,7 @@ func SelectTemplateWithCategories(templates []Template) (string, error) {
 
 	i, _, err := prompt.Run()
 	if err != nil {
-		return "", fmt.Errorf("prompt failed %v", err)
+		return "", fmt.Errorf("prompt failed %w", err)
 	}
 	return templates[i].Name, nil
 }

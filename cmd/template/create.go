@@ -41,7 +41,7 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 			helpers.VerbosePrintln(cmd, ctx, "No output path specified, using current directory")
 			dir, err := os.Getwd()
 			if err != nil {
-				cmd.Printf("Error getting current directory: %v\n", err)
+				cmd.PrintErrf("Error getting current directory: %v\n", err)
 				return
 			}
 			outputPath = dir
@@ -53,7 +53,7 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 			helpers.VerbosePrintln(cmd, ctx, "No template name provided, prompting for selection")
 			selected, err := template.SelectTemplateWithCategories(templateHandler.GetTemplates())
 			if err != nil {
-				cmd.Printf("Error selecting template: %v\n", err)
+				cmd.PrintErrf("Error selecting template: %v\n", err)
 				return
 			}
 			templateName = selected

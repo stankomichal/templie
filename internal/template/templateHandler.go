@@ -297,7 +297,7 @@ func (th *TemplateHandler) syncByClean() error {
 func Load(cmd *cobra.Command) (*TemplateHandler, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return nil, fmt.Errorf("could not get home dir: %v", err)
+		return nil, fmt.Errorf("could not get home dir: %w", err)
 	}
 	templateFile := filepath.Join(homeDir, ".config", "templie", "templates.yaml")
 
@@ -336,7 +336,7 @@ func Load(cmd *cobra.Command) (*TemplateHandler, error) {
 func writeTemplateFile(handler *TemplateHandler) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return fmt.Errorf("could not get home dir: %v", err)
+		return fmt.Errorf("could not get home dir: %w", err)
 	}
 
 	templateFile := filepath.Join(homeDir, ".config", "templie", "templates.yaml")
@@ -344,11 +344,11 @@ func writeTemplateFile(handler *TemplateHandler) error {
 	out, err := yaml.Marshal(handler.templates)
 
 	if err != nil {
-		return fmt.Errorf("could not marshal template handler: %v", err)
+		return fmt.Errorf("could not marshal template handler: %w", err)
 	}
 
 	if err = os.WriteFile(templateFile, out, 0644); err != nil {
-		return fmt.Errorf("could not write template file: %v", err)
+		return fmt.Errorf("could not write template file: %w", err)
 	}
 
 	return nil
