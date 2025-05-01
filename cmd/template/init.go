@@ -37,8 +37,8 @@ Examples:
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
 		// Example of using verbose output
-		helpers.VerbosePrintln(cmd, ctx, "Starting template initialization process")
-		helpers.VerbosePrintf(cmd, ctx, "Raw template name: %s\n", args[0])
+		helpers.VerbosePrintln(cmd, "Starting template initialization process")
+		helpers.VerbosePrintf(cmd, "Raw template name: %s\n", args[0])
 
 		templateName := helpers.SanitizeName(args[0])
 		if templateName == "" {
@@ -46,9 +46,9 @@ Examples:
 			return
 		}
 
-		helpers.VerbosePrintf(cmd, ctx, "Sanitized template name: %s\n", templateName)
-		helpers.VerbosePrintf(cmd, ctx, "Categories: %v\n", categories)
-		helpers.VerbosePrintf(cmd, ctx, "Copy content: %v\n", copyContent)
+		helpers.VerbosePrintf(cmd, "Sanitized template name: %s\n", templateName)
+		helpers.VerbosePrintf(cmd, "Categories: %v\n", categories)
+		helpers.VerbosePrintf(cmd, "Copy content: %v\n", copyContent)
 
 		path, err := templateHandler.InitializeTemplate(templateName, &categories, copyContent)
 		if err != nil {
@@ -57,7 +57,7 @@ Examples:
 		}
 
 		cmd.Printf("Template initialized at: %s\n", path)
-		helpers.VerbosePrintln(cmd, ctx, "Template initialization completed successfully")
+		helpers.VerbosePrintln(cmd, "Template initialization completed successfully")
 	},
 }
 

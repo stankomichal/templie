@@ -24,11 +24,9 @@ Examples:
 `,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx := cmd.Context()
+		helpers.VerbosePrintln(cmd, "Starting display default config process")
 
-		helpers.VerbosePrintln(cmd, ctx, "Starting display default config process")
-
-		helpers.VerbosePrintln(cmd, ctx, "Getting default config")
+		helpers.VerbosePrintln(cmd, "Getting default config")
 
 		defaultConfig, err := config.DefaultConfig()
 		if err != nil {
@@ -36,17 +34,17 @@ Examples:
 			return
 		}
 
-		helpers.VerbosePrintln(cmd, ctx, "Marshaling default config to YAML")
+		helpers.VerbosePrintln(cmd, "Marshaling default config to YAML")
 		out, err := yaml.Marshal(defaultConfig)
 
 		if err != nil {
 			cmd.PrintErrf("Error marshaling config: %v\n", err)
 			return
 		}
-		helpers.VerbosePrintln(cmd, ctx, "Default config marshaled successfully")
+		helpers.VerbosePrintln(cmd, "Default config marshaled successfully")
 		cmd.Print(string(out))
 
-		helpers.VerbosePrintln(cmd, ctx, "Display default config process completed")
+		helpers.VerbosePrintln(cmd, "Display default config process completed")
 	},
 }
 

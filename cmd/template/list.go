@@ -29,9 +29,9 @@ Examples:
 		ctx := cmd.Context()
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
-		helpers.VerbosePrintln(cmd, ctx, "Starting template listing process")
+		helpers.VerbosePrintln(cmd, "Starting template listing process")
 
-		helpers.VerbosePrintln(cmd, ctx, "Retrieving templates from template handler")
+		helpers.VerbosePrintln(cmd, "Retrieving templates from template handler")
 		templates := templateHandler.GetTemplates()
 
 		if len(templates) == 0 {
@@ -39,10 +39,10 @@ Examples:
 			return
 		}
 
-		helpers.VerbosePrintf(cmd, ctx, "Found %d templates\n", len(templates))
+		helpers.VerbosePrintf(cmd, "Found %d templates\n", len(templates))
 		cmd.Println("Templates:")
 		for _, template := range templates {
-			helpers.VerbosePrintf(cmd, ctx, "Processing template: %s\n", template.Name)
+			helpers.VerbosePrintf(cmd, "Processing template: %s\n", template.Name)
 			cmd.Printf("- %s\n", template.Name)
 
 			if len(template.Categories) > 0 {
@@ -54,7 +54,7 @@ Examples:
 			}
 		}
 
-		helpers.VerbosePrintln(cmd, ctx, "Template listing process completed")
+		helpers.VerbosePrintln(cmd, "Template listing process completed")
 	},
 }
 

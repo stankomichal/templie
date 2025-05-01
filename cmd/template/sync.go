@@ -33,15 +33,15 @@ Examples:
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := cmd.Context()
 
-		helpers.VerbosePrintln(cmd, ctx, "Starting template sync process")
-		helpers.VerbosePrintf(cmd, ctx, "Sync strategy: %s\n", syncStrategy)
+		helpers.VerbosePrintln(cmd, "Starting template sync process")
+		helpers.VerbosePrintf(cmd, "Sync strategy: %s\n", syncStrategy)
 
 		// Handle wrong strategy
 		if syncStrategy != "create" && syncStrategy != "clean" {
 			cmd.PrintErrln("Invalid strategy. Use 'create' or 'clean'")
 			err := cmd.Help()
 			if err != nil {
-				helpers.VerbosePrintf(cmd, ctx, "Error displaying help: %v\n", err)
+				helpers.VerbosePrintf(cmd, "Error displaying help: %v\n", err)
 				return
 			}
 
@@ -52,7 +52,7 @@ Examples:
 
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
-		helpers.VerbosePrintf(cmd, ctx, "Syncing templates with strategy: %s\n", syncStrategy)
+		helpers.VerbosePrintf(cmd, "Syncing templates with strategy: %s\n", syncStrategy)
 		err := templateHandler.SyncTemplates(syncStrategy)
 		if err != nil {
 			cmd.PrintErrf("Error syncing templates: %v\n", err)
@@ -60,7 +60,7 @@ Examples:
 		}
 
 		cmd.Println("Templates synchronized successfully")
-		helpers.VerbosePrintln(cmd, ctx, "Template sync process completed successfully")
+		helpers.VerbosePrintln(cmd, "Template sync process completed successfully")
 	},
 }
 
