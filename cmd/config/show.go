@@ -10,6 +10,8 @@ import (
 	"github.com/stankomichal/templie/internal/helpers"
 )
 
+var raw bool
+
 // showCmd represents the show command
 var showCmd = &cobra.Command{
 	Use:   "show <variable-name>",
@@ -37,7 +39,12 @@ Examples:
 			return
 		}
 		helpers.VerbosePrintf(cmd, ctx, "Variable value retrieved successfully\n")
-		cmd.Printf("%s=%s\n", args[0], varValue)
+		if raw {
+			cmd.Println(varValue)
+			return
+		} else {
+			cmd.Printf("%s=%s\n", args[0], varValue)
+		}
 
 		helpers.VerbosePrintln(cmd, ctx, "Show config variable process completed")
 	},
@@ -45,4 +52,6 @@ Examples:
 
 func init() {
 	ConfigCmd.AddCommand(showCmd)
+
+	showCmd.Flags().BoolVarP(&raw, "raw", "r", false, "Output only the raw value, useful for scripts")
 }
