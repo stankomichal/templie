@@ -6,6 +6,8 @@ package config
 import (
 	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/config"
+	"github.com/stankomichal/templie/internal/contextKey"
+	"github.com/stankomichal/templie/internal/helpers"
 )
 
 // updateCmd represents the update command
@@ -23,14 +25,23 @@ Examples:
 
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Println("update called")
-		config := cmd.Context().Value("config").(*config.Config)
-		varValue, err := config.Update(args[0], args[1])
+		ctx := cmd.Context()
+		cfg := ctx.Value(contextKey.ConfigKey).(*config.Config)
+
+		helpers.VerbosePrintln(cmd, ctx, "Starting config update process")
+		helpers.VerbosePrintf(cmd, ctx, "Variable name: %s\n", args[0])
+		helpers.VerbosePrintf(cmd, ctx, "New value: %s\n", args[1])
+
+		helpers.VerbosePrintf(cmd, ctx, "Updating variable %s to value %s\n", args[0], args[1])
+		varValue, err := cfg.Update(args[0], args[1])
 		if err != nil {
-			cmd.Println(err)
-		} else {
-			cmd.Println(varValue)
+			cmd.PrintErrf("Error updating variable: %v\n", err)
+			return
 		}
+		helpers.VerbosePrintf(cmd, ctx, "Variable updated to %s\n", varValue)
+		cmd.Println("Variable updated successfully")
+
+		helpers.VerbosePrintln(cmd, ctx, "Config update process completed")
 	},
 }
 

@@ -77,7 +77,8 @@ templie template preview <template-name>
 
 ### Global Flags
 
-* `-v`, `--version`: Show version.
+* `-v`, `--verbose`: Enable verbose output for detailed information.
+* `--version`: Show version.
 * `-h`, `--help`: Show help information for the command.
 
 ## Configuration

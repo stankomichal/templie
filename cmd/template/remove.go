@@ -6,6 +6,7 @@ package template
 import (
 	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/contextKey"
+	"github.com/stankomichal/templie/internal/helpers"
 	"github.com/stankomichal/templie/internal/template"
 )
 
@@ -25,25 +26,34 @@ Examples:
 	Aliases: []string{"rm"},
 	Args:    cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+		ctx := cmd.Context()
+		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+
+		helpers.VerbosePrintln(cmd, ctx, "Starting template removal process")
 
 		var templateName string
 		if len(args) == 0 {
+			helpers.VerbosePrintln(cmd, ctx, "No template name provided, prompting for selection")
 			selected, err := template.SelectTemplateWithCategories(templateHandler.GetTemplates())
 			if err != nil {
-				cmd.Println("Error selecting template:", err)
+				cmd.PrintErrf("Error selecting template: %v\n", err)
 				return
 			}
 			templateName = selected
 		} else {
 			templateName = args[0]
+			helpers.VerbosePrintf(cmd, ctx, "Template name provided: %s\n", templateName)
 		}
 
+		helpers.VerbosePrintf(cmd, ctx, "Removing template: %s\n", templateName)
 		if err := templateHandler.RemoveTemplate(templateName); err != nil {
-			cmd.Println("Error removing the template:", err)
+			cmd.PrintErrf("Error removing the template: %v\n", err)
 			return
 		}
-		cmd.Printf("Template %s removed\n", templateName)
+
+		cmd.Printf("Template %s successfully removed\n", templateName)
+
+		helpers.VerbosePrintln(cmd, ctx, "Template removal process completed")
 	},
 }
 

@@ -5,14 +5,16 @@ package template
 
 import (
 	"github.com/stankomichal/templie/internal/contextKey"
+	"github.com/stankomichal/templie/internal/helpers"
 	"github.com/stankomichal/templie/internal/template"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 // removeCategoryCmd represents the removeCategory command
 var removeCategoryCmd = &cobra.Command{
-	Use:   "remove-category <template-name> [categories...]>",
+	Use:   "remove-category <template-name> <categories>",
 	Short: "Remove one or more categories from a template",
 	Long: `
 Removes one or more categories from the specified template.
@@ -20,21 +22,33 @@ Removes one or more categories from the specified template.
 You must provide the template name followed by at least one category to remove.
 
 Examples:
-  templie template remove-category my-template dev backend
+  templie template remove-category my-template dev,backend
 `,
-	Args: cobra.MinimumNArgs(2),
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+		ctx := cmd.Context()
+		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+
+		helpers.VerbosePrintln(cmd, ctx, "Starting category removal process")
 
 		templateName := args[0]
-		categories := args[1:]
+		helpers.VerbosePrintf(cmd, ctx, "Template name: %s\n", templateName)
+
+		categoriesString := args[1]
+		categories := strings.Split(categoriesString, ",")
+		helpers.VerbosePrintf(cmd, ctx, "Categories to remove: %v\n", categories)
+
 		for _, category := range categories {
+			helpers.VerbosePrintf(cmd, ctx, "Removing category %s from template %s\n", category, templateName)
 			if _, err := templateHandler.RemoveCategoryFromTemplate(templateName, category); err != nil {
-				cmd.Println("Error removing category:", err)
+				cmd.PrintErrf("Error removing category: %v\n", err)
 				return
 			}
+			helpers.VerbosePrintf(cmd, ctx, "Successfully removed category %s from template %s\n", category, templateName)
 		}
+
 		cmd.Printf("Categories %v removed from template %s\n", categories, templateName)
+		helpers.VerbosePrintln(cmd, ctx, "Category removal process completed")
 	},
 }
 

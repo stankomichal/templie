@@ -6,6 +6,7 @@ package template
 import (
 	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/contextKey"
+	"github.com/stankomichal/templie/internal/helpers"
 	"github.com/stankomichal/templie/internal/template"
 	"os"
 )
@@ -31,39 +32,50 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 	Aliases: []string{"c"},
 	Args:    cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+		ctx := cmd.Context()
+		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+
+		helpers.VerbosePrintln(cmd, ctx, "Starting template creation process")
+
 		if outputPath == "" {
+			helpers.VerbosePrintln(cmd, ctx, "No output path specified, using current directory")
 			dir, err := os.Getwd()
 			if err != nil {
-				cmd.Printf("Error getting current directory: %v\n", err)
+				cmd.PrintErrf("Error getting current directory: %v\n", err)
 				return
 			}
 			outputPath = dir
 		}
+		helpers.VerbosePrintf(cmd, ctx, "Output path: %s\n", outputPath)
 
 		var templateName string
 		if len(args) == 0 {
+			helpers.VerbosePrintln(cmd, ctx, "No template name provided, prompting for selection")
 			selected, err := template.SelectTemplateWithCategories(templateHandler.GetTemplates())
 			if err != nil {
-				cmd.Println("Error selecting template:", err)
+				cmd.PrintErrf("Error selecting template: %v\n", err)
 				return
 			}
 			templateName = selected
 		} else {
 			templateName = args[0]
 		}
+		helpers.VerbosePrintf(cmd, ctx, "Template name: %s\n", templateName)
 
 		if templateName == "" {
-			cmd.Println("Error: Template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
+			cmd.PrintErrln("Error: Template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 			return
 		}
 
+		helpers.VerbosePrintf(cmd, ctx, "Creating template %s at %s\n", templateName, outputPath)
 		_, err := templateHandler.CreateTemplate(templateName, outputPath)
 		if err != nil {
-			cmd.Printf("Error creating template: %v\n", err)
+			cmd.PrintErrf("Error creating template: %v\n", err)
 			return
 		}
-		cmd.Printf("Template successfully created.\n")
+
+		cmd.Printf("Template %s successfully created at %s\n", templateName, outputPath)
+		helpers.VerbosePrintln(cmd, ctx, "Template creation process completed")
 	},
 }
 

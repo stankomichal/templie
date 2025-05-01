@@ -26,24 +26,37 @@ Examples:
 
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+		ctx := cmd.Context()
+		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+
+		helpers.VerbosePrintln(cmd, ctx, "Starting template rename process")
+
+		helpers.VerbosePrintf(cmd, ctx, "Raw old name: %s\n", args[0])
 		oldName := helpers.SanitizeName(args[0])
+		helpers.VerbosePrintf(cmd, ctx, "Sanitized old name: %s\n", oldName)
+
+		helpers.VerbosePrintf(cmd, ctx, "Raw new name: %s\n", args[1])
 		newName := helpers.SanitizeName(args[1])
+		helpers.VerbosePrintf(cmd, ctx, "Sanitized new name: %s\n", newName)
 
 		if oldName == "" {
-			cmd.Println("Error: Old template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
+			cmd.PrintErrln("Error: Old template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 			return
 		}
 		if newName == "" {
-			cmd.Println("Error: New template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
+			cmd.PrintErrln("Error: New template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 			return
 		}
 
+		helpers.VerbosePrintf(cmd, ctx, "Renaming template from %s to %s\n", oldName, newName)
 		if _, err := templateHandler.RenameTemplate(oldName, newName); err != nil {
-			cmd.Println("Error renaming template:", err)
+			cmd.PrintErrf("Error renaming template: %v\n", err)
 			return
 		}
-		cmd.Printf("Template %s renamed to %s\n", oldName, newName)
+
+		cmd.Printf("Template %s successfully renamed to %s\n", oldName, newName)
+
+		helpers.VerbosePrintln(cmd, ctx, "Template rename process completed")
 	},
 }
 

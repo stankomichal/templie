@@ -3,8 +3,8 @@ package config
 import (
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -15,10 +15,10 @@ type Config struct {
 	FileDecorators  map[string]FileDecorator `yaml:"file_decorators"`
 }
 
-func DefaultConfig() *Config {
+func DefaultConfig() (*Config, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("Could not get user home dir: %v", err)
+		return nil, fmt.Errorf("could not get user home dir: %w", err)
 	}
 
 	return &Config{
@@ -33,13 +33,13 @@ func DefaultConfig() *Config {
 			".yaml": {Icon: "⚙️", Hex: "#ffffff", Color: color.New(color.FgWhite)},
 			".cpp":  {Icon: "💻", Hex: "#ff7b72", Color: color.New(color.FgMagenta)},
 		},
-	}
+	}, nil
 }
 
 func (c *Config) Show(varName string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
-		return "", fmt.Errorf("could not find the variable %v", varName)
+		return "", fmt.Errorf("could not find the variable %s", varName)
 	}
 	return *(varPointer.(*string)), nil
 }
@@ -47,7 +47,7 @@ func (c *Config) Show(varName string) (string, error) {
 func (c *Config) Update(varName string, varNewValue string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
-		return "", fmt.Errorf("could not find the variable %v", varName)
+		return "", fmt.Errorf("could not find the variable %s", varName)
 	}
 	*(varPointer.(*string)) = varNewValue
 
@@ -61,10 +61,14 @@ func (c *Config) Update(varName string, varNewValue string) (string, error) {
 func (c *Config) Reset(varName string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
-		return "", fmt.Errorf("could not find the variable %v", varName)
+		return "", fmt.Errorf("could not find the variable %s", varName)
 	}
 
-	varPointerDefault := DefaultConfig().getVar(varName)
+	defaultConfig, err := DefaultConfig()
+	if err != nil {
+		return "", fmt.Errorf("could not get default config: %w", err)
+	}
+	varPointerDefault := defaultConfig.getVar(varName)
 	*(varPointer.(*string)) = *(varPointerDefault.(*string))
 	if err := writeConfig(c); err != nil {
 		return "", fmt.Errorf("could not write config file: %w", err)
@@ -73,10 +77,10 @@ func (c *Config) Reset(varName string) (string, error) {
 	return *(varPointer.(*string)), nil
 }
 
-func Load() (*Config, error) {
+func Load(cmd *cobra.Command) (*Config, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("Could not get user home dir: %v", err)
+		return nil, fmt.Errorf("could not get user home dir: %w", err)
 	}
 	configDir := filepath.Join(homeDir, ".config", "templie")
 	configPath := filepath.Join(configDir, "settings.yaml")
@@ -89,14 +93,17 @@ func Load() (*Config, error) {
 		}
 
 		// Config file
-		cfg := DefaultConfig()
+		defaultConfig, err := DefaultConfig()
+		if err != nil {
+			return nil, fmt.Errorf("could not get default config: %w", err)
+		}
 
-		if err = writeConfig(cfg); err != nil {
+		if err = writeConfig(defaultConfig); err != nil {
 			return nil, err
 		}
 
-		fmt.Println("Created default config at ", configPath)
-		return cfg, nil
+		cmd.Printf("Created default config at %s\n", configPath)
+		return defaultConfig, nil
 	}
 
 	data, err := os.ReadFile(configPath)
@@ -126,7 +133,7 @@ func (c *Config) getVar(varName string) interface{} {
 func writeConfig(config *Config) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("Could not get user home dir: %v", err)
+		return fmt.Errorf("could not get user home dir: %w", err)
 	}
 	configPath := filepath.Join(homeDir, ".config", "templie", "settings.yaml")
 

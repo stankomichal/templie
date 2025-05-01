@@ -2,12 +2,13 @@ package template
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/config"
 	"gopkg.in/yaml.v3"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
+	"sort"
 )
 
 type TemplateHandler struct {
@@ -89,6 +90,9 @@ func (th *TemplateHandler) GetTemplates() []Template {
 	for _, template := range th.templates {
 		templates = append(templates, template)
 	}
+	sort.Slice(templates, func(i, j int) bool {
+		return templates[i].Name < templates[j].Name
+	})
 	return templates
 }
 
@@ -290,10 +294,10 @@ func (th *TemplateHandler) syncByClean() error {
 	return nil
 }
 
-func Load() (*TemplateHandler, error) {
+func Load(cmd *cobra.Command) (*TemplateHandler, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("could not get home dir: %v", err)
+		return nil, fmt.Errorf("could not get home dir: %w", err)
 	}
 	templateFile := filepath.Join(homeDir, ".config", "templie", "templates.yaml")
 
@@ -302,10 +306,10 @@ func Load() (*TemplateHandler, error) {
 		templateHandler := DefaultTemplateHandler()
 
 		if err = writeTemplateFile(templateHandler); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not write template file: %w", err)
 		}
 
-		fmt.Println("Template file created at:", templateFile)
+		cmd.Printf("Template file created at: %s\n", templateFile)
 	}
 
 	data, err := os.ReadFile(templateFile)
@@ -321,7 +325,7 @@ func Load() (*TemplateHandler, error) {
 		templates: templates,
 	}
 
-	// Templates are empty - default to empty map
+	// Templates are empty - default to an empty map
 	if templateHandler.templates == nil {
 		templateHandler.templates = make(map[string]Template)
 	}
@@ -332,7 +336,7 @@ func Load() (*TemplateHandler, error) {
 func writeTemplateFile(handler *TemplateHandler) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("could not get home dir: %v", err)
+		return fmt.Errorf("could not get home dir: %w", err)
 	}
 
 	templateFile := filepath.Join(homeDir, ".config", "templie", "templates.yaml")
@@ -340,11 +344,11 @@ func writeTemplateFile(handler *TemplateHandler) error {
 	out, err := yaml.Marshal(handler.templates)
 
 	if err != nil {
-		log.Fatalf("could not marshal template handler: %v", err)
+		return fmt.Errorf("could not marshal template handler: %w", err)
 	}
 
 	if err = os.WriteFile(templateFile, out, 0644); err != nil {
-		log.Fatalf("could not write template file: %v", err)
+		return fmt.Errorf("could not write template file: %w", err)
 	}
 
 	return nil

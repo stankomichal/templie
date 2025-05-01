@@ -4,9 +4,10 @@ Copyright © 2025 Michal Stanko michal.stankoml@gmail.com
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/config"
+	"github.com/stankomichal/templie/internal/contextKey"
+	"github.com/stankomichal/templie/internal/helpers"
 )
 
 // showCmd represents the show command
@@ -24,13 +25,21 @@ Examples:
 
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		config := cmd.Context().Value("config").(*config.Config)
-		varValue, err := config.Show(args[0])
+		ctx := cmd.Context()
+		cfg := ctx.Value(contextKey.ConfigKey).(*config.Config)
+
+		helpers.VerbosePrintln(cmd, ctx, "Starting show config variable process")
+		helpers.VerbosePrintf(cmd, ctx, "Variable name: %s\n", args[0])
+
+		varValue, err := cfg.Show(args[0])
 		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Println(varValue)
+			cmd.PrintErrf("Error showing variable: %v\n", err)
+			return
 		}
+		helpers.VerbosePrintf(cmd, ctx, "Variable value retrieved successfully\n")
+		cmd.Printf("%s=%s\n", args[0], varValue)
+
+		helpers.VerbosePrintln(cmd, ctx, "Show config variable process completed")
 	},
 }
 

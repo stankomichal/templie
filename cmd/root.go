@@ -43,19 +43,24 @@ Examples:
 `,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// Load the config file
-		cfg, err := configClass.Load()
+		cfg, err := configClass.Load(cmd)
 		if err != nil {
-			cmd.Println("Failed to load config:", err)
+			cmd.PrintErrf("Failed to load config: %v\n", err)
 		}
 		ctx := context.WithValue(cmd.Context(), contextKey.ConfigKey, cfg)
 
 		// Load the template file
-		templateHandler, err := template.Load()
+		templateHandler, err := template.Load(cmd)
 		if err != nil {
-			cmd.Println("Failed to load templates:", err)
+			cmd.PrintErrf("Failed to load templates: %v\n", err)
 		}
 		templateHandler.SetConfig(cfg)
 		ctx = context.WithValue(ctx, contextKey.TemplateHandlerKey, templateHandler)
+
+		// Get a verbose flag value and add it to context
+		verbose, _ := cmd.Flags().GetBool("verbose")
+		ctx = context.WithValue(ctx, contextKey.VerboseKey, verbose)
+
 		cmd.SetContext(ctx)
 	},
 }
@@ -77,6 +82,9 @@ func addSubcommandPalettes() {
 func init() {
 	rootCmd.Version = "0.1.0"
 	rootCmd.SetVersionTemplate("{{printf \"templie version %s\" .Version}}\n")
+
+	// Add verbose flag to root command
+	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "enable verbose output")
 
 	addSubcommandPalettes()
 }
