@@ -28,18 +28,27 @@ into the newly created template folder.
 
 Examples:
   templie template init my-template
-  templie template init my-template --categories dev backend
+  templie template init my-template --categories dev,backend
   templie template init my-template --copy
 `,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+		ctx := cmd.Context()
+		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+
+		// Example of using verbose output
+		helpers.VerbosePrintln(ctx, "Starting template initialization process")
+		helpers.VerbosePrintf(ctx, "Raw template name: %s\n", args[0])
 
 		templateName := helpers.SanitizeName(args[0])
 		if templateName == "" {
 			cmd.Println("Error: Template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 			return
 		}
+
+		helpers.VerbosePrintf(ctx, "Sanitized template name: %s\n", templateName)
+		helpers.VerbosePrintf(ctx, "Categories: %v\n", categories)
+		helpers.VerbosePrintf(ctx, "Copy content: %v\n", copyContent)
 
 		path, err := templateHandler.InitializeTemplate(templateName, &categories, copyContent)
 		if err != nil {
@@ -48,6 +57,7 @@ Examples:
 		}
 
 		cmd.Printf("Template initialized at: %s\n", path)
+		helpers.VerbosePrintln(ctx, "Template initialization completed successfully")
 	},
 }
 
