@@ -12,17 +12,17 @@ import (
 
 var raw bool
 
-// showCmd represents the show command
-var showCmd = &cobra.Command{
-	Use:   "show <variable-name>",
-	Short: "Show the current value of a configuration variable",
+// getCmd represents the get command
+var getCmd = &cobra.Command{
+	Use:   "get <variable-name>",
+	Short: "get the current value of a configuration variable",
 	Long: `
-The 'show' command allows you to view the current value of a specific configuration variable.
+The 'get' command allows you to view the current value of a specific configuration variable.
 
 This command takes the name of the configuration variable as an argument and outputs its current value.
 
 Examples:
-  templie config show <variable-name>   // Displays the current value of the specified configuration variable
+  templie config get <variable-name>   // Displays the current value of the specified configuration variable
 `,
 
 	Args: cobra.ExactArgs(1),
@@ -30,10 +30,10 @@ Examples:
 		ctx := cmd.Context()
 		cfg := ctx.Value(contextKey.ConfigKey).(*config.Config)
 
-		helpers.VerbosePrintln(cmd, "Starting show config variable process")
+		helpers.VerbosePrintln(cmd, "Starting get config variable process")
 		helpers.VerbosePrintf(cmd, "Variable name: %s\n", args[0])
 
-		varValue, err := cfg.Show(args[0])
+		varValue, err := cfg.Get(args[0])
 		if err != nil {
 			cmd.PrintErrf("Error showing variable: %v\n", err)
 			return
@@ -41,17 +41,16 @@ Examples:
 		helpers.VerbosePrintf(cmd, "Variable value retrieved successfully\n")
 		if raw {
 			cmd.Println(varValue)
-			return
 		} else {
 			cmd.Printf("%s=%s\n", args[0], varValue)
 		}
 
-		helpers.VerbosePrintln(cmd, "Show config variable process completed")
+		helpers.VerbosePrintln(cmd, "Get config variable process completed")
 	},
 }
 
 func init() {
-	ConfigCmd.AddCommand(showCmd)
+	ConfigCmd.AddCommand(getCmd)
 
-	showCmd.Flags().BoolVarP(&raw, "raw", "r", false, "Output only the raw value, useful for scripts")
+	getCmd.Flags().BoolVarP(&raw, "raw", "r", false, "Output only the raw value, useful for scripts")
 }

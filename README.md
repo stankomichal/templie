@@ -9,7 +9,7 @@ categories.
 * Preview templates before using them in a tree-like structure.
 * List and manage existing templates.
 * Sync templates.
-* Configuration with reset/show/update.
+* Configuration with reset/get/set.
 * Written in Go.
 
 ## Installation
@@ -69,10 +69,10 @@ templie template list
 
 ### Preview a template
 
-To preview a specific template, use the `preview` command. This command will show you the structure of the template.
+To preview a specific template, use the `tree` command. This command will show you the structure of the template.
 
 ```bash
-templie template preview <template-name>
+templie template tree <template-name>
 ```
 
 ### Global Flags
@@ -83,13 +83,13 @@ templie template preview <template-name>
 
 ## Configuration
 
-Use the `config` command to manage the configuration of Templie. You can reset, show, or update the configuration.
+Use the `config` command to manage the configuration of Templie. You can reset, get, or set the configuration.
 
-* To show the current configuration: `templie config display`
+* To show the current configuration: `templie config view`
 
-* To show a variable: `templie config show <variable>`
+* To show a variable: `templie config get <variable>`
 
-* To update a variable: `templie config update <variable> <value>`
+* To update a variable: `templie config set <variable> <value>`
 
 * To reset a variable: `templie config reset <variable>`
 

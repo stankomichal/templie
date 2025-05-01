@@ -29,7 +29,7 @@ func DefaultConfig() (*Config, error) {
 	}, nil
 }
 
-func (c *Config) Show(varName string) (string, error) {
+func (c *Config) Get(varName string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
 		return "", fmt.Errorf("could not find the variable %s", varName)
@@ -37,7 +37,7 @@ func (c *Config) Show(varName string) (string, error) {
 	return *(varPointer.(*string)), nil
 }
 
-func (c *Config) Update(varName string, varNewValue string) (string, error) {
+func (c *Config) Set(varName string, varNewValue string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
 		return "", fmt.Errorf("could not find the variable %s", varName)

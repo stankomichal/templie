@@ -13,28 +13,28 @@ import (
 var useIcons bool
 var useColor bool
 
-// previewCmd represents the preview command
-var previewCmd = &cobra.Command{
-	Use:   "preview",
-	Short: "Show the file tree of a template",
+// treeCmd represents the tree command
+var treeCmd = &cobra.Command{
+	Use:   "tree",
+	Short: "Get the file tree of a template",
 	Long: `
-Displays a preview of the file and folder structure of a specific template.
+Displays the file and folder structure of a specific template.
 
 If no template name is provided, an interactive menu will let you select one.
 
-You can customize the preview with flags such as --icons or --color.
+You can customize the tree with flags such as --icons or --color.
 
 Examples:
-  templie template preview my-template
-  templie template preview --icons --color
-  templie template preview
+  templie template tree
+  templie template tree my-template
+  templie template tree --icons --color
 `,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := cmd.Context()
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
-		helpers.VerbosePrintln(cmd, "Starting template preview process")
+		helpers.VerbosePrintln(cmd, "Starting template tree process")
 		helpers.VerbosePrintf(cmd, "Using icons: %v, Using color: %v\n", useIcons, useColor)
 
 		var templateName string
@@ -59,7 +59,7 @@ Examples:
 		}
 
 		helpers.VerbosePrintf(cmd, "Template path: %s\n", templatePath)
-		cmd.Printf("Preview of template: %s\n", templateName)
+		cmd.Printf("Tree of template: %s\n", templateName)
 
 		helpers.VerbosePrintln(cmd, "Generating tree preview")
 		if err := helpers.PrintTree(cmd, templatePath, "", useIcons, useColor); err != nil {
@@ -67,12 +67,12 @@ Examples:
 			return
 		}
 
-		helpers.VerbosePrintln(cmd, "Template preview process completed")
+		helpers.VerbosePrintln(cmd, "Template tree process completed")
 	},
 }
 
 func init() {
-	TemplateCmd.AddCommand(previewCmd)
-	previewCmd.Flags().BoolVarP(&useIcons, "icons", "i", false, "Use icons in the preview")
-	previewCmd.Flags().BoolVarP(&useColor, "color", "c", false, "Use color in the preview")
+	TemplateCmd.AddCommand(treeCmd)
+	treeCmd.Flags().BoolVarP(&useIcons, "icons", "i", false, "Use icons in the tree")
+	treeCmd.Flags().BoolVarP(&useColor, "color", "c", false, "Use color in the tree")
 }
