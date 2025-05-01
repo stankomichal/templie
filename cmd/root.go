@@ -80,7 +80,7 @@ func addSubcommandPalettes() {
 }
 
 func init() {
-	rootCmd.Version = "0.1.0"
+	rootCmd.Version = "0.3.0"
 	rootCmd.SetVersionTemplate("{{printf \"templie version %s\" .Version}}\n")
 
 	// Add verbose flag to root command
