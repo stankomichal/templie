@@ -6,6 +6,7 @@ package template
 import (
 	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/contextKey"
+	"github.com/stankomichal/templie/internal/helpers"
 	"github.com/stankomichal/templie/internal/template"
 )
 
@@ -24,25 +25,35 @@ Examples:
 
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+		ctx := cmd.Context()
+		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+
+		helpers.VerbosePrintln(ctx, "Starting template path retrieval process")
 
 		var templateName string
 		if len(args) == 0 {
+			helpers.VerbosePrintln(ctx, "No template name provided, prompting for selection")
 			selected, err := template.SelectTemplateWithCategories(templateHandler.GetTemplates())
 			if err != nil {
-				cmd.Println("Error selecting template:", err)
+				cmd.PrintErrf("Error selecting template: %v\n", err)
 				return
 			}
 			templateName = selected
 		} else {
 			templateName = args[0]
+			helpers.VerbosePrintf(ctx, "Template name provided: %s\n", templateName)
 		}
+
+		helpers.VerbosePrintf(ctx, "Retrieving path for template: %s\n", templateName)
 		path, err := templateHandler.GetTemplatePath(templateName)
 		if err != nil {
-			cmd.Println("Error getting template path:", err)
+			cmd.PrintErrf("Error getting template path: %v\n", err)
 			return
 		}
+
 		cmd.Printf("Path for template %s: %s\n", templateName, path)
+
+		helpers.VerbosePrintln(ctx, "Template path retrieval process completed")
 	},
 }
 
