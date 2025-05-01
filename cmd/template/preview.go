@@ -33,31 +33,44 @@ Examples:
 
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		cfg := cmd.Context().Value("config").(*config.Config)
-		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+		ctx := cmd.Context()
+		cfg := ctx.Value(contextKey.ConfigKey).(*config.Config)
+		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+
+		helpers.VerbosePrintln(ctx, "Starting template preview process")
+		helpers.VerbosePrintf(ctx, "Using icons: %v, Using color: %v\n", useIcons, useColor)
 
 		var templateName string
 		if len(args) == 0 {
+			helpers.VerbosePrintln(ctx, "No template name provided, prompting for selection")
 			selected, err := template.SelectTemplateWithCategories(templateHandler.GetTemplates())
 			if err != nil {
-				cmd.Println("Error selecting template:", err)
+				cmd.PrintErrf("Error selecting template: %v\n", err)
 				return
 			}
 			templateName = selected
 		} else {
 			templateName = args[0]
+			helpers.VerbosePrintf(ctx, "Template name provided: %s\n", templateName)
 		}
 
+		helpers.VerbosePrintf(ctx, "Retrieving path for template: %s\n", templateName)
 		templatePath, err := templateHandler.GetTemplatePath(templateName)
 		if err != nil {
-			cmd.Println("Error getting template:", err)
+			cmd.PrintErrf("Error getting template: %v\n", err)
 			return
 		}
-		cmd.Println("Preview of template:", templateName)
+
+		helpers.VerbosePrintf(ctx, "Template path: %s\n", templatePath)
+		cmd.Printf("Preview of template: %s\n", templateName)
+
+		helpers.VerbosePrintln(ctx, "Generating tree preview")
 		if err := helpers.PrintTree(cfg.FileDecorators, templatePath, "", useIcons, useColor); err != nil {
-			cmd.Println("Error printing template tree:", err)
+			cmd.PrintErrf("Error printing template tree: %v\n", err)
 			return
 		}
+
+		helpers.VerbosePrintln(ctx, "Template preview process completed")
 	},
 }
 
