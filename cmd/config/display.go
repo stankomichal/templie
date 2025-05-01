@@ -33,10 +33,9 @@ Examples:
 		helpers.VerbosePrintln(ctx, "Marshaling config to YAML")
 		out, err := yaml.Marshal(cfg)
 		if err != nil {
-			cmd.Printf("Error marshaling config: %v\n", err)
+			cmd.PrintErrf("Error marshaling config: %v\n", err)
 			return
 		}
-
 		helpers.VerbosePrintln(ctx, "Config marshaled successfully")
 		cmd.Print(string(out))
 
