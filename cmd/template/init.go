@@ -42,7 +42,7 @@ Examples:
 
 		templateName := helpers.SanitizeName(args[0])
 		if templateName == "" {
-			cmd.Println("Error: Template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
+			cmd.PrintErrln("Error: Template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 			return
 		}
 
@@ -52,7 +52,7 @@ Examples:
 
 		path, err := templateHandler.InitializeTemplate(templateName, &categories, copyContent)
 		if err != nil {
-			cmd.Printf("Error initializing template: %v\n", err)
+			cmd.PrintErrf("Error initializing template: %v\n", err)
 			return
 		}
 
