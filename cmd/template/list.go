@@ -5,6 +5,7 @@ package template
 
 import (
 	"github.com/stankomichal/templie/internal/contextKey"
+	"github.com/stankomichal/templie/internal/helpers"
 	"github.com/stankomichal/templie/internal/template"
 
 	"github.com/spf13/cobra"
@@ -25,21 +26,35 @@ Examples:
 `,
 	Aliases: []string{"ls"},
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
+		ctx := cmd.Context()
+		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
+		helpers.VerbosePrintln(ctx, "Starting template listing process")
+
+		helpers.VerbosePrintln(ctx, "Retrieving templates from template handler")
 		templates := templateHandler.GetTemplates()
 
 		if len(templates) == 0 {
-			cmd.Println("No templates found.")
+			cmd.Println("No templates found")
 			return
 		}
+
+		helpers.VerbosePrintf(ctx, "Found %d templates\n", len(templates))
 		cmd.Println("Templates:")
 		for _, template := range templates {
+			helpers.VerbosePrintf(ctx, "Processing template: %s\n", template.Name)
 			cmd.Printf("- %s\n", template.Name)
-			for _, category := range template.Categories {
-				cmd.Printf("\t- %s\n", category)
+
+			if len(template.Categories) > 0 {
+				for _, category := range template.Categories {
+					cmd.Printf("\t- %s\n", category)
+				}
+			} else {
+				cmd.Printf("\t- No categories\n")
 			}
 		}
+
+		helpers.VerbosePrintln(ctx, "Template listing process completed")
 	},
 }
 
