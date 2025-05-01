@@ -6,6 +6,7 @@ package config
 import (
 	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/config"
+	"github.com/stankomichal/templie/internal/helpers"
 	"gopkg.in/yaml.v3"
 )
 
@@ -23,14 +24,24 @@ Examples:
 `,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		out, err := yaml.Marshal(config.DefaultConfig())
+		ctx := cmd.Context()
+
+		helpers.VerbosePrintln(ctx, "Starting display default config process")
+
+		helpers.VerbosePrintln(ctx, "Getting default config")
+		defaultConfig := config.DefaultConfig()
+
+		helpers.VerbosePrintln(ctx, "Marshaling default config to YAML")
+		out, err := yaml.Marshal(defaultConfig)
 
 		if err != nil {
-			cmd.Printf("could not marshal config: %v\n", err)
+			cmd.PrintErrf("Error marshaling config: %v\n", err)
 			return
 		}
-
+		helpers.VerbosePrintln(ctx, "Default config marshaled successfully")
 		cmd.Print(string(out))
+
+		helpers.VerbosePrintln(ctx, "Display default config process completed")
 	},
 }
 
