@@ -56,6 +56,11 @@ Examples:
 		}
 		templateHandler.SetConfig(cfg)
 		ctx = context.WithValue(ctx, contextKey.TemplateHandlerKey, templateHandler)
+
+		// Get verbose flag value and add it to context
+		verbose, _ := cmd.Flags().GetBool("verbose")
+		ctx = context.WithValue(ctx, contextKey.VerboseKey, verbose)
+
 		cmd.SetContext(ctx)
 	},
 }
@@ -77,6 +82,9 @@ func addSubcommandPalettes() {
 func init() {
 	rootCmd.Version = "0.1.0"
 	rootCmd.SetVersionTemplate("{{printf \"templie version %s\" .Version}}\n")
+
+	// Add verbose flag to root command
+	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "enable verbose output")
 
 	addSubcommandPalettes()
 }
