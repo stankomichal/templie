@@ -8,6 +8,7 @@ import (
 	configCmd "github.com/stankomichal/templie/cmd/config"
 	templateCmd "github.com/stankomichal/templie/cmd/template"
 	configClass "github.com/stankomichal/templie/internal/config"
+	"github.com/stankomichal/templie/internal/contextKey"
 	"github.com/stankomichal/templie/internal/template"
 	"os"
 
@@ -46,7 +47,7 @@ Examples:
 		if err != nil {
 			cmd.Println("Failed to load config:", err)
 		}
-		ctx := context.WithValue(cmd.Context(), "config", cfg)
+		ctx := context.WithValue(cmd.Context(), contextKey.ConfigKey, cfg)
 
 		// Load the template file
 		templateHandler, err := template.Load()
@@ -54,7 +55,7 @@ Examples:
 			cmd.Println("Failed to load templates:", err)
 		}
 		templateHandler.SetConfig(cfg)
-		ctx = context.WithValue(ctx, "templateHandler", templateHandler)
+		ctx = context.WithValue(ctx, contextKey.TemplateHandlerKey, templateHandler)
 		cmd.SetContext(ctx)
 	},
 }

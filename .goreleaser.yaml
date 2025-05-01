@@ -39,8 +39,10 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+      - "^ci:"
 
 release:
+  prerelease: auto
   footer: >-
 
     ---

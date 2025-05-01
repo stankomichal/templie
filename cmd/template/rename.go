@@ -5,6 +5,7 @@ package template
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/stankomichal/templie/internal/contextKey"
 	"github.com/stankomichal/templie/internal/helpers"
 	"github.com/stankomichal/templie/internal/template"
 )
@@ -25,7 +26,7 @@ Examples:
 
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
+		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 		oldName := helpers.SanitizeName(args[0])
 		newName := helpers.SanitizeName(args[1])
 

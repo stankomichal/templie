@@ -4,6 +4,7 @@ Copyright © 2025 Michal Stanko michal.stankoml@gmail.com
 package template
 
 import (
+	"github.com/stankomichal/templie/internal/contextKey"
 	"github.com/stankomichal/templie/internal/template"
 
 	"github.com/spf13/cobra"
@@ -24,7 +25,7 @@ Examples:
 `,
 	Aliases: []string{"ls"},
 	Run: func(cmd *cobra.Command, args []string) {
-		templateHandler := cmd.Context().Value("templateHandler").(*template.TemplateHandler)
+		templateHandler := cmd.Context().Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
 		templates := templateHandler.GetTemplates()
 
