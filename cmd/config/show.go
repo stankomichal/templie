@@ -4,7 +4,6 @@ Copyright © 2025 Michal Stanko michal.stankoml@gmail.com
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/config"
 	"github.com/stankomichal/templie/internal/contextKey"
@@ -34,11 +33,11 @@ Examples:
 
 		varValue, err := cfg.Show(args[0])
 		if err != nil {
-			fmt.Printf("Error showing variable: %v\n", err)
-		} else {
-			helpers.VerbosePrintf(ctx, "Variable value retrieved successfully\n")
-			fmt.Printf("%s=%s\n", args[0], varValue)
+			cmd.PrintErrf("Error showing variable: %v\n", err)
+			return
 		}
+		helpers.VerbosePrintf(ctx, "Variable value retrieved successfully\n")
+		cmd.Printf("%s=%s\n", args[0], varValue)
 
 		helpers.VerbosePrintln(ctx, "Show config variable process completed")
 	},
