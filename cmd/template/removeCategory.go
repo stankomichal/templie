@@ -29,26 +29,26 @@ Examples:
 		ctx := cmd.Context()
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
-		helpers.VerbosePrintln(cmd, ctx, "Starting category removal process")
+		helpers.VerbosePrintln(cmd, "Starting category removal process")
 
 		templateName := args[0]
-		helpers.VerbosePrintf(cmd, ctx, "Template name: %s\n", templateName)
+		helpers.VerbosePrintf(cmd, "Template name: %s\n", templateName)
 
 		categoriesString := args[1]
 		categories := strings.Split(categoriesString, ",")
-		helpers.VerbosePrintf(cmd, ctx, "Categories to remove: %v\n", categories)
+		helpers.VerbosePrintf(cmd, "Categories to remove: %v\n", categories)
 
 		for _, category := range categories {
-			helpers.VerbosePrintf(cmd, ctx, "Removing category %s from template %s\n", category, templateName)
+			helpers.VerbosePrintf(cmd, "Removing category %s from template %s\n", category, templateName)
 			if _, err := templateHandler.RemoveCategoryFromTemplate(templateName, category); err != nil {
 				cmd.PrintErrf("Error removing category: %v\n", err)
 				return
 			}
-			helpers.VerbosePrintf(cmd, ctx, "Successfully removed category %s from template %s\n", category, templateName)
+			helpers.VerbosePrintf(cmd, "Successfully removed category %s from template %s\n", category, templateName)
 		}
 
 		cmd.Printf("Categories %v removed from template %s\n", categories, templateName)
-		helpers.VerbosePrintln(cmd, ctx, "Category removal process completed")
+		helpers.VerbosePrintln(cmd, "Category removal process completed")
 	},
 }
 

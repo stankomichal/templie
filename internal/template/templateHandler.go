@@ -1,9 +1,12 @@
 package template
 
 import (
+	"context"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/stankomichal/templie/internal/config"
+	"github.com/stankomichal/templie/internal/contextKey"
+	"github.com/stankomichal/templie/internal/helpers"
 	"gopkg.in/yaml.v3"
 	"io"
 	"os"
@@ -26,7 +29,7 @@ func (th *TemplateHandler) SetConfig(config *config.Config) {
 	th.config = config
 }
 
-func (th *TemplateHandler) InitializeTemplate(templateName string, categories *[]string, copyContent bool) (string, error) {
+func (th *TemplateHandler) InitializeTemplate(cmd *cobra.Command, templateName string, categories *[]string, copyContent bool) (string, error) {
 	if _, exists := th.templates[templateName]; exists {
 		return "", fmt.Errorf("template \"%s\" already exists", templateName)
 	}
@@ -58,7 +61,7 @@ func (th *TemplateHandler) InitializeTemplate(templateName string, categories *[
 		if err != nil {
 			return "", fmt.Errorf("could not get current working directory: %w", err)
 		}
-		if err = copyDir(currentDir, templateDir); err != nil {
+		if err = copyDir(cmd, currentDir, templateDir); err != nil {
 			return "", fmt.Errorf("could not copy working directory: %w", err)
 		}
 	}
@@ -66,7 +69,7 @@ func (th *TemplateHandler) InitializeTemplate(templateName string, categories *[
 	return templateDir, nil
 }
 
-func (th *TemplateHandler) CreateTemplate(templateName string, path string) (*Template, error) {
+func (th *TemplateHandler) CreateTemplate(cmd *cobra.Command, templateName string, path string, force bool) (*Template, error) {
 	template, exists := th.templates[templateName]
 	if !exists {
 		return nil, fmt.Errorf("template \"%s\" does not exist", templateName)
@@ -78,7 +81,12 @@ func (th *TemplateHandler) CreateTemplate(templateName string, path string) (*Te
 		return nil, fmt.Errorf("template \"%s\" does not exist", templateName)
 	}
 
-	if err := copyDir(templatePath, path); err != nil {
+	if force {
+		ctx := context.WithValue(cmd.Context(), contextKey.OverwriteKey, true)
+		cmd.SetContext(ctx)
+	}
+
+	if err := copyDir(cmd, templatePath, path); err != nil {
 		return nil, fmt.Errorf("could not copy directory: %w", err)
 	}
 
@@ -354,7 +362,7 @@ func writeTemplateFile(handler *TemplateHandler) error {
 	return nil
 }
 
-func copyDir(src string, dest string) error {
+func copyDir(cmd *cobra.Command, src string, dest string) error {
 	srcInfo, err := os.Stat(src)
 	if err != nil {
 		return fmt.Errorf("could not stat source directory: %w", err)
@@ -376,11 +384,11 @@ func copyDir(src string, dest string) error {
 		destPath := filepath.Join(dest, entry.Name())
 
 		if entry.IsDir() {
-			if err := copyDir(srcPath, destPath); err != nil {
+			if err := copyDir(cmd, srcPath, destPath); err != nil {
 				return err
 			}
 		} else {
-			if err := copyFile(srcPath, destPath); err != nil {
+			if err := copyFile(cmd, srcPath, destPath); err != nil {
 				return err
 			}
 		}
@@ -388,7 +396,37 @@ func copyDir(src string, dest string) error {
 	return nil
 }
 
-func copyFile(src string, dest string) error {
+func copyFile(cmd *cobra.Command, src string, dest string) error {
+	if _, err := os.Stat(src); err == nil {
+		overwrite := cmd.Context().Value(contextKey.OverwriteKey)
+		if overwrite != nil {
+			if !(overwrite.(bool)) {
+				return nil
+			}
+		} else {
+			res, err := helpers.ConfirmOverwrite(cmd, src)
+			if err != nil {
+				return fmt.Errorf("could not confirm overwrite: %w", err)
+			}
+
+			switch res {
+			case helpers.ResponseNo:
+				return nil
+			case helpers.ResponseNoToAll:
+				ctx := context.WithValue(cmd.Context(), contextKey.OverwriteKey, false)
+				cmd.SetContext(ctx)
+				return nil
+			case helpers.ResponseYesToAll:
+				ctx := context.WithValue(cmd.Context(), contextKey.OverwriteKey, true)
+				cmd.SetContext(ctx)
+			case helpers.ResponseYes:
+				// Do nothing, just continue
+			default:
+				return fmt.Errorf("invalid response: %s", res)
+			}
+		}
+	}
+
 	srcFile, err := os.Open(src)
 	if err != nil {
 		return fmt.Errorf("could not open source file: %w", err)

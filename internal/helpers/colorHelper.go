@@ -12,9 +12,9 @@ func GetFileIconAndColor(fileDecorators map[string]config.FileDecorator, fileNam
 	color.New()
 	if useIcons {
 		if foundIcon, exists := fileDecorators[filepath.Ext(fileName)]; exists {
-			fileIcon = foundIcon.Icon
+			fileIcon = foundIcon.Icon + " "
 		} else {
-			fileIcon = "📄"
+			fileIcon = "📄 "
 		}
 	}
 	if useColor {
@@ -25,5 +25,17 @@ func GetFileIconAndColor(fileDecorators map[string]config.FileDecorator, fileNam
 		}
 	}
 
-	return fileIcon + " ", fileColor
+	return fileIcon, fileColor
+}
+
+func GetFolderIconAndColor(folderDecorator config.FileDecorator, useIcons bool, useColor bool) (string, *color.Color) {
+	folderIcon := ""
+	folderColor := color.New(color.Reset)
+	if useIcons {
+		folderIcon = folderDecorator.Icon + " "
+	}
+	if useColor {
+		folderColor = folderDecorator.Color
+	}
+	return folderIcon, folderColor
 }

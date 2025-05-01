@@ -17,13 +17,13 @@ including viewing and modifying settings related to template categories, file pa
 
 Use this command to:
   - View current configuration settings
-  - Update configuration settings for templates
+  - Set configuration settings for templates
   - Reset configuration to default settings
 
 Examples:
   templie config display                                // Displays the current configuration
-  templie config show <variable-name>                   // Shows the value of a specific configuration key
-  templie config update <variable-name> <new-value>  	// Updates the configuration setting for a specific key
+  templie config get <variable-name>                    // Shows the value of a specific configuration key
+  templie config set <variable-name> <new-value>  	    // Updates the configuration setting of a specific key
   templie config reset <variable-name>                  // Resets all configuration settings to their defaults
 `,
 }

@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -13,6 +12,7 @@ type Config struct {
 	TemplateFolder  string                   `yaml:"template_folder"`
 	DefaultCategory string                   `yaml:"default_category"`
 	FileDecorators  map[string]FileDecorator `yaml:"file_decorators"`
+	FolderDecorator FileDecorator            `yaml:"folder_decorator"`
 }
 
 func DefaultConfig() (*Config, error) {
@@ -24,19 +24,12 @@ func DefaultConfig() (*Config, error) {
 	return &Config{
 		TemplateFolder:  filepath.Join(homeDir, ".config", "templie", "templates"),
 		DefaultCategory: "general",
-		FileDecorators: map[string]FileDecorator{
-			".js":   {Icon: "📜", Hex: "#007acc", Color: color.New(color.FgCyan)},
-			".ts":   {Icon: "📘", Hex: "#007acc", Color: color.New(color.FgCyan)},
-			".json": {Icon: "🧾", Hex: "#ff7b72", Color: color.New(color.FgMagenta)},
-			".go":   {Icon: "🐹", Hex: "#00add8", Color: color.New(color.FgBlue)},
-			".yml":  {Icon: "⚙️", Hex: "#ffffff", Color: color.New(color.FgWhite)},
-			".yaml": {Icon: "⚙️", Hex: "#ffffff", Color: color.New(color.FgWhite)},
-			".cpp":  {Icon: "💻", Hex: "#ff7b72", Color: color.New(color.FgMagenta)},
-		},
+		FileDecorators:  DefaultFileDecorators,
+		FolderDecorator: DefaultFolderDecorator,
 	}, nil
 }
 
-func (c *Config) Show(varName string) (string, error) {
+func (c *Config) Get(varName string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
 		return "", fmt.Errorf("could not find the variable %s", varName)
@@ -44,7 +37,7 @@ func (c *Config) Show(varName string) (string, error) {
 	return *(varPointer.(*string)), nil
 }
 
-func (c *Config) Update(varName string, varNewValue string) (string, error) {
+func (c *Config) Set(varName string, varNewValue string) (string, error) {
 	varPointer := c.getVar(varName)
 	if varPointer == nil {
 		return "", fmt.Errorf("could not find the variable %s", varName)

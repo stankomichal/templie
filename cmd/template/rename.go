@@ -29,15 +29,15 @@ Examples:
 		ctx := cmd.Context()
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
-		helpers.VerbosePrintln(cmd, ctx, "Starting template rename process")
+		helpers.VerbosePrintln(cmd, "Starting template rename process")
 
-		helpers.VerbosePrintf(cmd, ctx, "Raw old name: %s\n", args[0])
+		helpers.VerbosePrintf(cmd, "Raw old name: %s\n", args[0])
 		oldName := helpers.SanitizeName(args[0])
-		helpers.VerbosePrintf(cmd, ctx, "Sanitized old name: %s\n", oldName)
+		helpers.VerbosePrintf(cmd, "Sanitized old name: %s\n", oldName)
 
-		helpers.VerbosePrintf(cmd, ctx, "Raw new name: %s\n", args[1])
+		helpers.VerbosePrintf(cmd, "Raw new name: %s\n", args[1])
 		newName := helpers.SanitizeName(args[1])
-		helpers.VerbosePrintf(cmd, ctx, "Sanitized new name: %s\n", newName)
+		helpers.VerbosePrintf(cmd, "Sanitized new name: %s\n", newName)
 
 		if oldName == "" {
 			cmd.PrintErrln("Error: Old template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
@@ -48,7 +48,7 @@ Examples:
 			return
 		}
 
-		helpers.VerbosePrintf(cmd, ctx, "Renaming template from %s to %s\n", oldName, newName)
+		helpers.VerbosePrintf(cmd, "Renaming template from %s to %s\n", oldName, newName)
 		if _, err := templateHandler.RenameTemplate(oldName, newName); err != nil {
 			cmd.PrintErrf("Error renaming template: %v\n", err)
 			return
@@ -56,7 +56,7 @@ Examples:
 
 		cmd.Printf("Template %s successfully renamed to %s\n", oldName, newName)
 
-		helpers.VerbosePrintln(cmd, ctx, "Template rename process completed")
+		helpers.VerbosePrintln(cmd, "Template rename process completed")
 	},
 }
 

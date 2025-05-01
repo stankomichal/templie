@@ -29,11 +29,11 @@ Examples:
 		ctx := cmd.Context()
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
-		helpers.VerbosePrintln(cmd, ctx, "Starting template removal process")
+		helpers.VerbosePrintln(cmd, "Starting template removal process")
 
 		var templateName string
 		if len(args) == 0 {
-			helpers.VerbosePrintln(cmd, ctx, "No template name provided, prompting for selection")
+			helpers.VerbosePrintln(cmd, "No template name provided, prompting for selection")
 			selected, err := template.SelectTemplateWithCategories(templateHandler.GetTemplates())
 			if err != nil {
 				cmd.PrintErrf("Error selecting template: %v\n", err)
@@ -42,10 +42,10 @@ Examples:
 			templateName = selected
 		} else {
 			templateName = args[0]
-			helpers.VerbosePrintf(cmd, ctx, "Template name provided: %s\n", templateName)
+			helpers.VerbosePrintf(cmd, "Template name provided: %s\n", templateName)
 		}
 
-		helpers.VerbosePrintf(cmd, ctx, "Removing template: %s\n", templateName)
+		helpers.VerbosePrintf(cmd, "Removing template: %s\n", templateName)
 		if err := templateHandler.RemoveTemplate(templateName); err != nil {
 			cmd.PrintErrf("Error removing the template: %v\n", err)
 			return
@@ -53,7 +53,7 @@ Examples:
 
 		cmd.Printf("Template %s successfully removed\n", templateName)
 
-		helpers.VerbosePrintln(cmd, ctx, "Template removal process completed")
+		helpers.VerbosePrintln(cmd, "Template removal process completed")
 	},
 }
 

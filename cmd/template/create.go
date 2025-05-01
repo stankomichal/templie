@@ -12,6 +12,7 @@ import (
 )
 
 var outputPath string
+var force bool
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -35,10 +36,10 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 		ctx := cmd.Context()
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
-		helpers.VerbosePrintln(cmd, ctx, "Starting template creation process")
+		helpers.VerbosePrintln(cmd, "Starting template creation process")
 
 		if outputPath == "" {
-			helpers.VerbosePrintln(cmd, ctx, "No output path specified, using current directory")
+			helpers.VerbosePrintln(cmd, "No output path specified, using current directory")
 			dir, err := os.Getwd()
 			if err != nil {
 				cmd.PrintErrf("Error getting current directory: %v\n", err)
@@ -46,11 +47,11 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 			}
 			outputPath = dir
 		}
-		helpers.VerbosePrintf(cmd, ctx, "Output path: %s\n", outputPath)
+		helpers.VerbosePrintf(cmd, "Output path: %s\n", outputPath)
 
 		var templateName string
 		if len(args) == 0 {
-			helpers.VerbosePrintln(cmd, ctx, "No template name provided, prompting for selection")
+			helpers.VerbosePrintln(cmd, "No template name provided, prompting for selection")
 			selected, err := template.SelectTemplateWithCategories(templateHandler.GetTemplates())
 			if err != nil {
 				cmd.PrintErrf("Error selecting template: %v\n", err)
@@ -60,22 +61,25 @@ If no name is provided, you’ll be prompted to choose from existing templates.
 		} else {
 			templateName = args[0]
 		}
-		helpers.VerbosePrintf(cmd, ctx, "Template name: %s\n", templateName)
+
+		helpers.VerbosePrintf(cmd, "Template name: %s\n", templateName)
 
 		if templateName == "" {
 			cmd.PrintErrln("Error: Template name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 			return
 		}
 
-		helpers.VerbosePrintf(cmd, ctx, "Creating template %s at %s\n", templateName, outputPath)
-		_, err := templateHandler.CreateTemplate(templateName, outputPath)
+		helpers.VerbosePrintf(cmd, "Force flag: %v\n", force)
+
+		helpers.VerbosePrintf(cmd, "Creating template %s at %s\n", templateName, outputPath)
+		_, err := templateHandler.CreateTemplate(cmd, templateName, outputPath, force)
 		if err != nil {
 			cmd.PrintErrf("Error creating template: %v\n", err)
 			return
 		}
 
 		cmd.Printf("Template %s successfully created at %s\n", templateName, outputPath)
-		helpers.VerbosePrintln(cmd, ctx, "Template creation process completed")
+		helpers.VerbosePrintln(cmd, "Template creation process completed")
 	},
 }
 
@@ -83,4 +87,5 @@ func init() {
 	TemplateCmd.AddCommand(createCmd)
 
 	createCmd.Flags().StringVarP(&outputPath, "output", "o", "", "Output path for the template")
+	createCmd.Flags().BoolVarP(&force, "force", "f", false, "Force creation of the template even if it already exists")
 }

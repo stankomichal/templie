@@ -14,14 +14,14 @@ func IsVerbose(ctx context.Context) bool {
 	return verbose
 }
 
-func VerbosePrintln(cmd *cobra.Command, ctx context.Context, message string) {
-	if IsVerbose(ctx) {
+func VerbosePrintln(cmd *cobra.Command, message string) {
+	if IsVerbose(cmd.Context()) {
 		cmd.Println(message)
 	}
 }
 
-func VerbosePrintf(cmd *cobra.Command, ctx context.Context, format string, args ...interface{}) {
-	if IsVerbose(ctx) {
+func VerbosePrintf(cmd *cobra.Command, format string, args ...interface{}) {
+	if IsVerbose(cmd.Context()) {
 		cmd.Printf(format, args...)
 	}
 }
