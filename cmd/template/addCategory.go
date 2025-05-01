@@ -48,13 +48,13 @@ You must provide at least one category.
 			helpers.VerbosePrintf(ctx, "Sanitized category name: %s\n", sanitizedCategory)
 
 			if sanitizedCategory == "" {
-				cmd.Println("Error: Category name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
+				cmd.PrintErrln("Error: Category name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 				return
 			}
 
 			helpers.VerbosePrintf(ctx, "Adding category %s to template %s\n", sanitizedCategory, templateName)
 			if _, err := templateHandler.AddCategoryToTemplate(templateName, sanitizedCategory); err != nil {
-				cmd.Println("Error adding category:", err)
+				cmd.PrintErrf("Error adding category: %v\n", err)
 				return
 			}
 			helpers.VerbosePrintf(ctx, "Successfully added category %s to template %s\n", sanitizedCategory, templateName)
