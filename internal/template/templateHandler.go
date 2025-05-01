@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 )
 
 type TemplateHandler struct {
@@ -89,6 +90,9 @@ func (th *TemplateHandler) GetTemplates() []Template {
 	for _, template := range th.templates {
 		templates = append(templates, template)
 	}
+	sort.Slice(templates, func(i, j int) bool {
+		return templates[i].Name < templates[j].Name
+	})
 	return templates
 }
 
