@@ -10,6 +10,8 @@ import (
 	"github.com/stankomichal/templie/internal/template"
 )
 
+var raw bool
+
 // pathCmd represents the path command
 var pathCmd = &cobra.Command{
 	Use:   "path",
@@ -50,8 +52,11 @@ Examples:
 			cmd.PrintErrf("Error getting template path: %v\n", err)
 			return
 		}
-
-		cmd.Printf("Path for template %s: %s\n", templateName, path)
+		if raw {
+			cmd.Println(path)
+		} else {
+			cmd.Printf("Path for template %s: %s\n", templateName, path)
+		}
 
 		helpers.VerbosePrintln(cmd, ctx, "Template path retrieval process completed")
 	},
@@ -59,4 +64,6 @@ Examples:
 
 func init() {
 	TemplateCmd.AddCommand(pathCmd)
+
+	pathCmd.Flags().BoolVarP(&raw, "raw", "r", false, "Output only the raw value, useful for scripts")
 }
