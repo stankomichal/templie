@@ -26,22 +26,27 @@ Examples:
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := cmd.Context()
 
-		helpers.VerbosePrintln(ctx, "Starting display default config process")
+		helpers.VerbosePrintln(cmd, ctx, "Starting display default config process")
 
-		helpers.VerbosePrintln(ctx, "Getting default config")
-		defaultConfig := config.DefaultConfig()
+		helpers.VerbosePrintln(cmd, ctx, "Getting default config")
 
-		helpers.VerbosePrintln(ctx, "Marshaling default config to YAML")
+		defaultConfig, err := config.DefaultConfig()
+		if err != nil {
+			cmd.PrintErrf("Error getting default config: %v\n", err)
+			return
+		}
+
+		helpers.VerbosePrintln(cmd, ctx, "Marshaling default config to YAML")
 		out, err := yaml.Marshal(defaultConfig)
 
 		if err != nil {
 			cmd.PrintErrf("Error marshaling config: %v\n", err)
 			return
 		}
-		helpers.VerbosePrintln(ctx, "Default config marshaled successfully")
+		helpers.VerbosePrintln(cmd, ctx, "Default config marshaled successfully")
 		cmd.Print(string(out))
 
-		helpers.VerbosePrintln(ctx, "Display default config process completed")
+		helpers.VerbosePrintln(cmd, ctx, "Display default config process completed")
 	},
 }
 

@@ -28,10 +28,10 @@ Examples:
 		ctx := cmd.Context()
 		cfg := ctx.Value(contextKey.ConfigKey).(*config.Config)
 
-		helpers.VerbosePrintln(ctx, "Starting config reset process")
-		helpers.VerbosePrintf(ctx, "Variable name: %s\n", args[0])
+		helpers.VerbosePrintln(cmd, ctx, "Starting config reset process")
+		helpers.VerbosePrintf(cmd, ctx, "Variable name: %s\n", args[0])
 
-		helpers.VerbosePrintf(ctx, "Resetting variable %s to default value\n", args[0])
+		helpers.VerbosePrintf(cmd, ctx, "Resetting variable %s to default value\n", args[0])
 		varValue, err := cfg.Reset(args[0])
 		if err != nil {
 			cmd.PrintErrf("Error resetting variable: %v\n", err)
@@ -39,7 +39,7 @@ Examples:
 		}
 		cmd.Printf("Variable reset successfully to: %s\n", varValue)
 
-		helpers.VerbosePrintln(ctx, "Config reset process completed")
+		helpers.VerbosePrintln(cmd, ctx, "Config reset process completed")
 	},
 }
 

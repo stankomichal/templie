@@ -28,20 +28,20 @@ Examples:
 		ctx := cmd.Context()
 		cfg := ctx.Value(contextKey.ConfigKey).(*config.Config)
 
-		helpers.VerbosePrintln(ctx, "Starting config update process")
-		helpers.VerbosePrintf(ctx, "Variable name: %s\n", args[0])
-		helpers.VerbosePrintf(ctx, "New value: %s\n", args[1])
+		helpers.VerbosePrintln(cmd, ctx, "Starting config update process")
+		helpers.VerbosePrintf(cmd, ctx, "Variable name: %s\n", args[0])
+		helpers.VerbosePrintf(cmd, ctx, "New value: %s\n", args[1])
 
-		helpers.VerbosePrintf(ctx, "Updating variable %s to value %s\n", args[0], args[1])
+		helpers.VerbosePrintf(cmd, ctx, "Updating variable %s to value %s\n", args[0], args[1])
 		varValue, err := cfg.Update(args[0], args[1])
 		if err != nil {
 			cmd.PrintErrf("Error updating variable: %v\n", err)
 			return
 		}
-		helpers.VerbosePrintf(ctx, "Variable updated to %s\n", varValue)
+		helpers.VerbosePrintf(cmd, ctx, "Variable updated to %s\n", varValue)
 		cmd.Println("Variable updated successfully")
 
-		helpers.VerbosePrintln(ctx, "Config update process completed")
+		helpers.VerbosePrintln(cmd, ctx, "Config update process completed")
 	},
 }
 

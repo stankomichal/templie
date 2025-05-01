@@ -28,18 +28,18 @@ Examples:
 		ctx := cmd.Context()
 		cfg := ctx.Value(contextKey.ConfigKey).(*config.Config)
 
-		helpers.VerbosePrintln(ctx, "Starting display config process")
+		helpers.VerbosePrintln(cmd, ctx, "Starting display config process")
 
-		helpers.VerbosePrintln(ctx, "Marshaling config to YAML")
+		helpers.VerbosePrintln(cmd, ctx, "Marshaling config to YAML")
 		out, err := yaml.Marshal(cfg)
 		if err != nil {
 			cmd.PrintErrf("Error marshaling config: %v\n", err)
 			return
 		}
-		helpers.VerbosePrintln(ctx, "Config marshaled successfully")
+		helpers.VerbosePrintln(cmd, ctx, "Config marshaled successfully")
 		cmd.Print(string(out))
 
-		helpers.VerbosePrintln(ctx, "Display config process completed")
+		helpers.VerbosePrintln(cmd, ctx, "Display config process completed")
 	},
 }
 

@@ -32,36 +32,36 @@ You must provide at least one category.
 		ctx := cmd.Context()
 		templateHandler := ctx.Value(contextKey.TemplateHandlerKey).(*template.TemplateHandler)
 
-		helpers.VerbosePrintln(ctx, "Starting add category process")
+		helpers.VerbosePrintln(cmd, ctx, "Starting add category process")
 
 		templateName := args[0]
-		helpers.VerbosePrintf(ctx, "Template name: %s\n", templateName)
+		helpers.VerbosePrintf(cmd, ctx, "Template name: %s\n", templateName)
 
 		categoriesString := args[1]
 		categories := strings.Split(categoriesString, ",")
-		helpers.VerbosePrintf(ctx, "Categories to add: %v\n", categories)
+		helpers.VerbosePrintf(cmd, ctx, "Categories to add: %v\n", categories)
 
 		for _, category := range categories {
-			helpers.VerbosePrintf(ctx, "Processing category: %s\n", category)
+			helpers.VerbosePrintf(cmd, ctx, "Processing category: %s\n", category)
 
 			sanitizedCategory := helpers.SanitizeName(category)
-			helpers.VerbosePrintf(ctx, "Sanitized category name: %s\n", sanitizedCategory)
+			helpers.VerbosePrintf(cmd, ctx, "Sanitized category name: %s\n", sanitizedCategory)
 
 			if sanitizedCategory == "" {
 				cmd.PrintErrln("Error: Category name after sanitization is empty. Valid characters are a-z, A-Z, 0-9, _, . and -")
 				return
 			}
 
-			helpers.VerbosePrintf(ctx, "Adding category %s to template %s\n", sanitizedCategory, templateName)
+			helpers.VerbosePrintf(cmd, ctx, "Adding category %s to template %s\n", sanitizedCategory, templateName)
 			if _, err := templateHandler.AddCategoryToTemplate(templateName, sanitizedCategory); err != nil {
 				cmd.PrintErrf("Error adding category: %v\n", err)
 				return
 			}
-			helpers.VerbosePrintf(ctx, "Successfully added category %s to template %s\n", sanitizedCategory, templateName)
+			helpers.VerbosePrintf(cmd, ctx, "Successfully added category %s to template %s\n", sanitizedCategory, templateName)
 		}
 
 		cmd.Printf("Categories %v added to template %s\n", categories, templateName)
-		helpers.VerbosePrintln(ctx, "Add category process completed successfully")
+		helpers.VerbosePrintln(cmd, ctx, "Add category process completed successfully")
 	},
 }
 
